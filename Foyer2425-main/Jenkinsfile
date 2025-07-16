@@ -7,7 +7,7 @@ pipeline {
     }
 
     tools {
-        maven 'Maven3.9.x'
+        maven 'Maven3.9.x' // Nom configuré dans Jenkins Global Tool Configuration
     }
 
     stages {
@@ -36,16 +36,9 @@ pipeline {
 
         stage('Analyse SonarQube') {
             steps {
-                withSonarQubeEnv("${SONAR_SERVER}") {
-                    withCredentials([string(credentialsId: 'jenkins-token', variable: 'SONAR_TOKEN')]) {
-                        dir('Foyer2425-main') {
-                            sh '''
-                                mvn sonar:sonar \
-                                -Dsonar.projectKey=foyer-app \
-                                -Dsonar.host.url=http://sonarqube:9000 \
-                                -Dsonar.login=$SONAR_TOKEN
-                            '''
-                        }
+                withSonarQubeEnv("${env.SONAR_SERVER}") {
+                    dir('Foyer2425-main') {
+                        sh 'mvn sonar:sonar'
                     }
                 }
             }
