@@ -8,9 +8,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/HEDI121/Pi.git'
-            }
+           steps {
+           git branch: 'main',
+        url: 'https://github.com/HEDI121/Pi.git'
+    }
         }
 
         stage('Build & Compile') {
