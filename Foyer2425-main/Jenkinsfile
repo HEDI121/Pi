@@ -3,11 +3,12 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "arrami/foyer-app:latest"
-        SONAR_SERVER = "SonarLocal"
+        // Utilisez le nom du service Docker comme host
+        SONAR_HOST = "sonarqube" 
     }
 
     tools {
-        maven 'Maven3.9.x' // Nom configuré dans Jenkins Global Tool Configuration
+        maven 'Maven3.9.x'
     }
 
     stages {
@@ -38,7 +39,8 @@ pipeline {
             steps {
                 withSonarQubeEnv("SonarLocal") {
                     dir('Foyer2425-main') {
-                       sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000'
+                        // Utilisez la variable d'environnement
+                        sh "mvn sonar:sonar -Dsonar.host.url=http://${SONAR_HOST}:9000"
                     }
                 }
             }
