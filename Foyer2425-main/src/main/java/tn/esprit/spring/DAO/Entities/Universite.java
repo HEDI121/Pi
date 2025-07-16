@@ -20,7 +20,8 @@ public class Universite implements Serializable {
     long idUniversite;
     String nomUniversite;
     String adresse;
-    @OneToOne(cascade = CascadeType.ALL) //ajout, Modif et suppression
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "foyer_id_foyer")  // nomme explicitement la colonne FK
     Foyer foyer;
 
 }
