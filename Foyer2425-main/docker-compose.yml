@@ -10,15 +10,39 @@ services:
     networks:
       - devops
 
+  postgres:
+    image: postgres:13
+    container_name: sonar-postgres
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - devops
+    restart: always
+
   sonarqube:
     image: sonarqube:lts
     container_name: sonarqube
+    depends_on:
+      - postgres
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
     ports:
       - "9000:9000"
-    environment:
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
     networks:
       - devops
+    restart: always
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -26,15 +50,19 @@ services:
     user: root
     ports:
       - "8081:8080"   # Jenkins Web UI
-      - "50000:50000" # Jenkins agent
+      - "50000:50000" # Jenkins agents
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - devops
+    restart: always
 
 networks:
   devops:
 
 volumes:
   jenkins_home:
+  sonarqube_data:
+  sonarqube_logs:
+  postgres_data:
