@@ -5,41 +5,50 @@ pipeline {
         DOCKER_IMAGE = "arrami/foyer-app:latest"
         SONAR_SERVER = "SonarLocal"
     }
+
     tools {
-        maven 'Maven3.9.x' // Le nom que tu as mis dans Jenkins Global Tool Config
+        maven 'Maven3.9.x' // Nom configuré dans Jenkins Global Tool Configuration
     }
 
     stages {
         stage('Checkout') {
-           steps {
-           git branch: 'main',
-        url: 'https://github.com/HEDI121/Pi.git'
-    }
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/HEDI121/Pi.git'
+            }
         }
 
         stage('Build & Compile') {
             steps {
-                sh 'mvn clean compile'
+                dir('Foyer2425-main') {
+                    sh 'mvn clean compile'
+                }
             }
         }
 
         stage('Tests') {
             steps {
-                sh 'mvn test'
+                dir('Foyer2425-main') {
+                    sh 'mvn test'
+                }
             }
         }
 
         stage('Analyse SonarQube') {
             steps {
                 withSonarQubeEnv("${env.SONAR_SERVER}") {
-                    sh 'mvn sonar:sonar'
+                    dir('Foyer2425-main') {
+                        sh 'mvn sonar:sonar'
+                    }
                 }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                dir('Foyer2425-main') {
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
             }
         }
 
@@ -56,8 +65,10 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d --build'
+                dir('Foyer2425-main') {
+                    sh 'docker-compose down || true'
+                    sh 'docker-compose up -d --build'
+                }
             }
         }
     }
