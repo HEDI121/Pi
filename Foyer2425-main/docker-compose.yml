@@ -7,3 +7,34 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    networks:
+      - devops
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - devops
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    user: root
+    ports:
+      - "8081:8080"   # Jenkins Web UI
+      - "50000:50000" # Jenkins agent
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devops
+
+networks:
+  devops:
+
+volumes:
+  jenkins_home:
