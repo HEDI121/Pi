@@ -3,10 +3,12 @@ package tn.esprit.spring;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // <<== Ajouté
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // <<== Correction ici aussi
 public class BlocServiceTest {
