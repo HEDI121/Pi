@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "tondockerhub/tonprojet"
+        DOCKER_IMAGE = "arrami/foyer-app:latest"
         SONAR_SERVER = "SonarLocal"
     }
 
