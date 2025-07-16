@@ -5,6 +5,9 @@ pipeline {
         DOCKER_IMAGE = "arrami/foyer-app:latest"
         SONAR_SERVER = "SonarLocal"
     }
+    tools {
+        maven 'Maven3.9.x' // Le nom que tu as mis dans Jenkins Global Tool Config
+    }
 
     stages {
         stage('Checkout') {
