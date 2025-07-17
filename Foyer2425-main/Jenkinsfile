@@ -50,29 +50,21 @@ pipeline {
             steps {
                 dir('Foyer2425-main') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_CREDS_USR', passwordVariable: 'NEXUS_CREDS_PSW')]) {
-                        sh '''
-                            mvn deploy -s settings.xml 
-                        '''
+                        sh 'mvn deploy -s settings.xml'
                     }
                 }
             }
         }
 
-        stage('Docker Build') {
+        stage('Docker Build & Push') {
             steps {
                 dir('Foyer2425-main') {
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
-            }
-        }
-
-        stage('Push Docker') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE
-                    '''
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-creds') {
+                            def image = docker.build("${DOCKER_IMAGE}")
+                            image.push()
+                        }
+                    }
                 }
             }
         }
