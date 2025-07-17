@@ -37,7 +37,7 @@ pipeline {
 
         stage('Analyse SonarQube') {
             steps {
-                withSonarQubeEnv("SonarLocal") {
+                withSonarQubeEnv("SonarQube") {
                     dir('Foyer2425-main') {
                         sh "mvn sonar:sonar -Dsonar.host.url=http://${SONAR_HOST}:9000"
                     }
