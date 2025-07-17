@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "arrami/foyer-app:latest"
         SONAR_HOST = "sonarqube"
+        SONAR_TOKEN = credentials('sonar-token')  // <-- ajout du token ici
     }
 
     tools {
@@ -39,7 +40,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("SonarQube") {
                     dir('Foyer2425-main') {
-                        sh "mvn sonar:sonar -Dsonar.host.url=http://${SONAR_HOST}:9000"
+                        sh "mvn sonar:sonar -Dsonar.host.url=http://${SONAR_HOST}:9000 -Dsonar.login=${env.SONAR_TOKEN}"
                     }
                 }
             }
