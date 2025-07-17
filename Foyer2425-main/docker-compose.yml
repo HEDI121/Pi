@@ -19,19 +19,29 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock        # accès démon Docker hôte
-      - /usr/bin/docker:/usr/bin/docker                    # accès commande docker hôte
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
     networks:
       - foyer-net
     depends_on:
       - sonarqube
+
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    ports:
+      - "8082:8081"  # Port externe :8082, interne :8081
+    networks:
+      - foyer-net
+    volumes:
+      - nexus-data:/nexus-data
 
   app:
     build: .
     image: arrami/foyer-app:latest
     container_name: spring-app
     ports:
-      - "8081:8080"  # Évite conflit avec Jenkins
+      - "8081:8080"
     networks:
       - foyer-net
     depends_on:
@@ -43,3 +53,4 @@ networks:
 
 volumes:
   jenkins_data:
+  nexus-data:

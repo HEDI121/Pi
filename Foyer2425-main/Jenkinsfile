@@ -4,12 +4,13 @@ pipeline {
     environment {
         DOCKER_IMAGE = "arrami/foyer-app:latest"
         SONAR_HOST = "sonarqube"
-        SONAR_TOKEN = credentials('sonar-token')  // <-- ajout du token ici
+        SONAR_TOKEN = credentials('sonar-token')
+        NEXUS_CREDS = credentials('nexus-creds')
     }
 
     tools {
         maven 'Maven3.9.6'
-        // jdk 'JDK17' // décommente si configuré
+        // jdk 'JDK17'
     }
 
     stages {
@@ -42,6 +43,18 @@ pipeline {
                     dir('Foyer2425-main') {
                         sh "mvn sonar:sonar -Dsonar.host.url=http://${SONAR_HOST}:9000 -Dsonar.login=${env.SONAR_TOKEN}"
                     }
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                dir('Foyer2425-main') {
+                    sh '''
+                        mvn deploy \
+                        -Dnexus.username=$NEXUS_CREDS_USR \
+                        -Dnexus.password=$NEXUS_CREDS_PSW
+                    '''
                 }
             }
         }
