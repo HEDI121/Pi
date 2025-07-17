@@ -19,6 +19,8 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock        # accès démon Docker hôte
+      - /usr/bin/docker:/usr/bin/docker                    # accès commande docker hôte
     networks:
       - foyer-net
     depends_on:
@@ -29,7 +31,7 @@ services:
     image: arrami/foyer-app:latest
     container_name: spring-app
     ports:
-      - "8081:8080"  # Changé de 8080 à 8081 pour éviter les conflits
+      - "8081:8080"  # Évite conflit avec Jenkins
     networks:
       - foyer-net
     depends_on:
