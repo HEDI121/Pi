@@ -23,7 +23,7 @@ pipeline {
         stage('Build & Compile') {
             steps {
                 dir('Foyer2425-main') {
-                    sh 'mvn clean compile -s ../settings.xml'
+                    sh 'mvn clean compile -s settings.xml'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Tests') {
             steps {
                 dir('Foyer2425-main') {
-                    sh 'mvn test -s ../settings.xml'
+                    sh 'mvn test -s settings.xml'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("SonarQube") {
                     dir('Foyer2425-main') {
-                        sh "mvn sonar:sonar -s ../settings.xml -Dsonar.host.url=http://${SONAR_HOST}:9000 -Dsonar.login=${env.SONAR_TOKEN}"
+                        sh "mvn sonar:sonar -s settings.xml -Dsonar.host.url=http://${SONAR_HOST}:9000 -Dsonar.login=${env.SONAR_TOKEN}"
                     }
                 }
             }
@@ -51,7 +51,7 @@ pipeline {
                 dir('Foyer2425-main') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_CREDS_USR', passwordVariable: 'NEXUS_CREDS_PSW')]) {
                         sh '''
-                            mvn deploy -s ../settings.xml \
+                            mvn deploy -s settings.xml \
                                 -Dnexus.username=$NEXUS_CREDS_USR \
                                 -Dnexus.password=$NEXUS_CREDS_PSW
                         '''
