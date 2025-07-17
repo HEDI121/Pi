@@ -51,9 +51,7 @@ pipeline {
                 dir('Foyer2425-main') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_CREDS_USR', passwordVariable: 'NEXUS_CREDS_PSW')]) {
                         sh '''
-                            mvn deploy -s settings.xml \
-                                -Dnexus.username=$NEXUS_CREDS_USR \
-                                -Dnexus.password=$NEXUS_CREDS_PSW
+                            mvn deploy -s settings.xml 
                         '''
                     }
                 }
