@@ -14,16 +14,25 @@ services:
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins
+    user: root  # ✅ permet d'exécuter docker dans Jenkins
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock  # ✅ accès à Docker hôte
     networks:
       - foyer-net
     depends_on:
       - sonarqube
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y docker.io docker-compose &&
+        /usr/bin/tini -- /usr/local/bin/jenkins.sh
+      "
 
   nexus:
     image: sonatype/nexus3:latest
