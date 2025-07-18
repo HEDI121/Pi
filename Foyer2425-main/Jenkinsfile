@@ -36,15 +36,21 @@ pipeline {
             }
         }
 
-        stage('Analyse SonarQube') {
-            steps {
-                withSonarQubeEnv("SonarQube") {
-                    dir('Foyer2425-main') {
-                        sh "mvn sonar:sonar -s settings.xml -Dsonar.host.url=http://${SONAR_HOST}:9000 -Dsonar.login=${env.SONAR_TOKEN}"
-                    }
+       stage('Analyse SonarQube') {
+    steps {
+        withSonarQubeEnv("SonarQube") {
+            withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'TOKEN')]) {
+                dir('Foyer2425-main') {
+                    sh '''
+                        mvn sonar:sonar -s settings.xml \
+                        -Dsonar.host.url=http://${SONAR_HOST}:9000 \
+                        -Dsonar.login=$TOKEN
+                    '''
                 }
             }
         }
+    }
+}
 
         stage('Deploy to Nexus') {
             steps {
