@@ -12,14 +12,18 @@ services:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins  # 👉 Utilise ton Dockerfile personnalisé
     container_name: jenkins
+    privileged: true                  # 👉 Nécessaire pour le socket Docker
+    user: root                        # 👉 Nécessaire pour utiliser Docker dans Jenkins
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock  # 👉 Accès au Docker de l’hôte
     networks:
       - foyer-net
     depends_on:
