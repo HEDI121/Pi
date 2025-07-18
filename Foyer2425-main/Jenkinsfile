@@ -86,13 +86,6 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
-            steps {
-                dir('Foyer2425-main') {
-                    sh 'docker compose down || true'
-                    sh 'docker compose up -d --build'
-                }
-            }
-        }
+       
     }
 }
