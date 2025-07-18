@@ -18,9 +18,9 @@ services:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - /mnt/c/Users/arram/jenkins_data:/var/jenkins_home
+      - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./jenkins_home:/var/jenkins_home
+      - 
       - /usr/bin/docker:/usr/bin/docker:ro  # Clé de la solution !
     user: root  # Nécessaire temporairement
     networks:
